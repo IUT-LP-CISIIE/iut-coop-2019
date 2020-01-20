@@ -16,12 +16,22 @@ window.axios = axios.create({
 });
 
 
-
 Vue.config.productionTip = false
 Vue.prototype.$bus = new Vue()
 
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  beforeCreate() {
+      window.axios.interceptors.request.use((config) => {
+			if(this.$store.state.token_session) {
+				config.url+='?token='+this.$store.state.token_session;
+			}
+        return config
+      }, error => {
+        return console.log(error)
+      })
+
+  }
 }).$mount('#app')

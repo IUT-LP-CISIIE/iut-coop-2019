@@ -1,0 +1,80 @@
+<template>
+	<div class="messages">
+
+			<section v-if="channel">
+				<h2 class="title">{{channel.topic}}</h2>
+				<p class="subtitle" v-html="afficherTags(channel.label)"></p>
+			</section>
+
+
+			<Message  v-for="message in messages" :message="message"></Message>
+
+			<div class="poster">
+
+		    	<form @submit.prevent="posterMessage">
+				<div class="field">
+					<p class="control has-icons-left">
+					<input class="input" type="text" placeholder="Entrez votre message ici" v-model="nouveauMessage">
+					<span class="icon is-small is-left">
+					<i class="fas fa-comment"></i>
+					</span>
+					</p>
+				</div>		    		
+				</form>
+			</div>
+
+	</div>
+</template>
+
+<script>
+  import Message from '@/components/Message.vue'
+	export default {
+		name : 'Messages',
+		props : ['channel','messages'],
+		components : {Message},
+		data() {
+			return {
+				nouveauMessage:''
+			}
+		},
+		mounted() {
+		},
+		methods : {
+			posterMessage() {
+				if(this.nouveauMessage) {
+					axios.post('channels/'+this.channel.id+'/posts',{
+							member_id:this.$store.state.membre.id,
+							message:this.nouveauMessage
+						}).then(response => {
+							this.nouveauMessage='';
+
+						})
+				}
+			},
+		  	afficherTags(tags) {
+		  		if(tags) {
+			  		let html = [];
+			  		tags.split(',').forEach(tag => {
+			  			html.push('<span class="tag">'+tag+'</span>');
+			  		});
+			  		return html.join(' ');
+			  	}
+		  	}			
+		}
+	}
+</script>
+
+<style scoped>
+.poster {
+	padding: 8px 12px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+.messages {
+	padding: 1em;
+	height: 100%;
+	overflow: auto;
+}
+</style>

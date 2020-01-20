@@ -11,9 +11,18 @@ const routes = [
     component: Home
   },
   {
+    path: '/conversation/:id',
+    name: 'conversation',
+    component: Home
+  },
+  {
     path: '/connexion',
     name: 'connexion',
     component: () => import('../views/Connexion.vue')
+  },
+  {
+    path: '/nouvelle-conversation',
+    component: () => import('../views/ConversationNouvelle.vue')
   },
   {
     path: '/creer-un-compte',
@@ -23,7 +32,8 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  linkActiveClass: "is-active",
 })
 
 export default router
