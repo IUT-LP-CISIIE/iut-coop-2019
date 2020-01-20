@@ -6,8 +6,11 @@
 				<p class="subtitle" v-html="afficherTags(channel.label)"></p>
 			</section>
 
+			<template v-if="messages.length>0">			
+				<Message v-for="message in messages" :message="message"></Message>
+			</template>
+			<section class="section" v-else><i>Il n'y a aucun message dans cette discussion</i></section>
 
-			<Message  v-for="message in messages" :message="message"></Message>
 
 			<div class="poster">
 

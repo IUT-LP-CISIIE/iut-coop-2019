@@ -29,8 +29,15 @@
       axios.get('ping').then(() => {
         this.ready=true;
         /* Si personne n'est connecté, rediriger vers la page de connexion */
-        if(!this.membreConnecte) {
+        let membre_id = this.membreConnecte;
+        if(!membre_id) {
           this.$router.push('connexion');
+        } else {
+          // si une session est en cours, on teste sa validité
+          axios.get('members/'+membre_id+'/signedin').catch((error) => {
+            this.$store.commit('setSessionMembre',false);
+            this.$router.push('connexion');
+          });
         }
 
       }).catch(() => {
@@ -42,7 +49,7 @@
     },
     computed : {
       membreConnecte() {
-        return this.$store.state.membre ? true : false;
+        return this.$store.state.membre ? this.$store.state.membre.id : false;
       }
     }
   }

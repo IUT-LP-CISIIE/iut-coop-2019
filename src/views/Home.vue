@@ -34,7 +34,7 @@
 
 		</div>
 		<div class="col-conversation">
-			<Messages :channel="channelCourant"></Messages>
+			<Messages :messages="messages" :channel="channelCourant"></Messages>
 		</div>
 
   </div>
@@ -50,6 +50,7 @@ export default {
     },
   data() {
   	return {
+  		messages:[],
   		channels : [],
   		channelCourant:false
   	}

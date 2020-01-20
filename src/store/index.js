@@ -17,8 +17,13 @@ export default new Vuex.Store({
   },
   mutations: {
     setSessionMembre(state,data) {
-      state.membre = data.member;
-      state.token_session = data.token;
+      if(data) {
+        state.membre = data.member;
+        state.token_session = data.token;
+      } else {
+        state.membre=false;
+        state.token_session=false;
+      }
     }
   },
   actions: {
