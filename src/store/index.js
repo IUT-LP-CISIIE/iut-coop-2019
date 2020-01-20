@@ -12,10 +12,14 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   plugins : [vp.plugin],
   state: {
+    membres : [],
   	membre : false,
   	token_session : false
   },
   mutations: {
+    setMembres(state,membres) {
+      state.membres = membres;
+    },
     setSessionMembre(state,data) {
       if(data) {
         state.membre = data.member;

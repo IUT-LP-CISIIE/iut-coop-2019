@@ -16,6 +16,16 @@ const routes = [
     component: Home
   },
   {
+    path: '/membre/:id',
+    name: 'membre',
+    component: () => import('../views/Membre.vue')
+  },
+  {
+    path: '/membres',
+    name: 'membres',
+    component: () => import('../views/Membres.vue')
+  },
+  {
     path: '/connexion',
     name: 'connexion',
     component: () => import('../views/Connexion.vue')
@@ -33,7 +43,7 @@ const routes = [
 
 const router = new VueRouter({
   routes,
-  linkActiveClass: "is-active",
+  linkExactActiveClass: "is-active",
 })
 
 export default router

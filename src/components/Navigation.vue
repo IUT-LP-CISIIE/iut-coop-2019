@@ -14,7 +14,9 @@
 
       <div class="navbar-menu">
         <div class="navbar-start">
-          <router-link class="navbar-item" to="/">Home</router-link>
+          <router-link class="navbar-item" to="/">Conversation</router-link>
+          
+          <router-link class="navbar-item" to="/membres">Membres</router-link>
         </div>
       </div>
     </nav>

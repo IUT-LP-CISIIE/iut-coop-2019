@@ -8,6 +8,10 @@ import axios from 'axios'
 import 'bulma/css/bulma.css'
 
 
+import { outils } from './outils'
+Vue.mixin(outils);
+
+
 window.axios = axios.create({
 	baseURL : 'https://tools.sopress.net/iut/coop/api/',
 	headers: {
@@ -32,6 +36,5 @@ new Vue({
       }, error => {
         return console.log(error)
       })
-
   }
 }).$mount('#app')

@@ -1,10 +1,10 @@
 <template>
-	<div class="messages">
+	<div class="messages" v-if="channel">
 
-			<section v-if="channel">
+			<header>
 				<h2 class="title">{{channel.topic}}</h2>
 				<p class="subtitle" v-html="afficherTags(channel.label)"></p>
-			</section>
+			</header>
 
 			<template v-if="messages.length>0">			
 				<Message v-for="message in messages" :message="message"></Message>
@@ -43,6 +43,13 @@
 		mounted() {
 		},
 		methods : {
+			getMembre(id) {
+				for(let i=0;i<membres.length;i++){
+					if(membres[i].id == id) {
+						return membres[i];
+					}
+				}
+			},
 			posterMessage() {
 				if(this.nouveauMessage) {
 					axios.post('channels/'+this.channel.id+'/posts',{
@@ -50,7 +57,7 @@
 							message:this.nouveauMessage
 						}).then(response => {
 							this.nouveauMessage='';
-
+							this.$bus.$emit('rechargerChannel');
 						})
 				}
 			},
@@ -67,17 +74,26 @@
 	}
 </script>
 
-<style scoped>
+<style>
 .poster {
 	padding: 8px 12px;
 	position: absolute;
 	bottom: 0;
-	left: 0;
+	right: 0;
 	width: 100%;
 }
 .messages {
-	padding: 1em;
+	padding: 100px 1em;
 	height: 100%;
 	overflow: auto;
+}
+
+header {
+	position: absolute;
+	left: 0;
+	top:0;
+	background: white;
+	width: 100%;
+	padding: 1em;
 }
 </style>

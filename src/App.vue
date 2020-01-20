@@ -7,7 +7,6 @@
     <!-- contenu de l'application (chargé via le router) -->
     <router-view v-show="ready"/>
 
-
     <notification/>
   </div>
 </template>
@@ -27,18 +26,26 @@
     mounted() {
       
       axios.get('ping').then(() => {
-        this.ready=true;
-        /* Si personne n'est connecté, rediriger vers la page de connexion */
-        let membre_id = this.membreConnecte;
-        if(!membre_id) {
-          this.$router.push('connexion');
-        } else {
-          // si une session est en cours, on teste sa validité
-          axios.get('members/'+membre_id+'/signedin').catch((error) => {
-            this.$store.commit('setSessionMembre',false);
-            this.$router.push('connexion');
-          });
-        }
+
+        /**
+        recuperer tous les membres
+        */
+        axios.get('members').then((response) => {
+          this.ready=true;
+          this.$store.commit('setMembres',response.data);
+
+          /* Si personne n'est connecté, rediriger vers la page de connexion */
+          let membre_id = this.membreConnecte;
+          if(!membre_id) {
+            this.$router.push('/connexion');
+          } else {
+            // si une session est en cours, on teste sa validité
+            axios.get('members/'+membre_id+'/signedin').catch((error) => {
+              this.$store.commit('setSessionMembre',false);
+              this.$router.push('/connexion');
+            });
+          }
+        });
 
       }).catch(() => {
 

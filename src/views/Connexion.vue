@@ -3,7 +3,7 @@
 
     <section class="section">
 		<div class="container">
-	    	<h1 class="title">Se connecter !</h1>
+	    	<h1 class="title">Se connecter</h1>
 		    <section class="section">
 		    	<form @submit.prevent="connect">
 

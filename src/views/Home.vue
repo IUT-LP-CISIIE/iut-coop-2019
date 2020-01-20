@@ -9,14 +9,6 @@
 			  <div class="panel-block nouvelle-conversation">
 					<router-link to="/nouvelle-conversation" class="button is-fullwidth">Nouvelle conversation</router-link>
 			  </div>
-<!--			  <div class="panel-block">
-			    <p class="control has-icons-left">
-			      <input class="input" type="text" placeholder="Search">
-			      <span class="icon is-left">
-			        <i class="fas fa-search" aria-hidden="true"></i>
-			      </span>
-			    </p>
-			  </div>-->
 
 				<template v-for="channel in channels">
 					<router-link 
@@ -57,20 +49,21 @@ export default {
   },
   watch: {
     $route() {
-    	this.changerChannel();
+    	this.chargerChannel();
     }
   },  
   mounted() {
 
-      if(this.$route.params.id) {
-      	this.changerChannel();
-      } else {
-      	this.chargerChannels();
-      }
-
+	if(this.$route.params.id) {
+		this.chargerChannel();
+	} else {
+		this.chargerChannels();
+	}
+	this.$bus.$on('rechargerChannel',this.chargerChannel);
+	setInterval(this.chargerChannel,5000);
   },
   methods : {
-  	changerChannel() {
+  	chargerChannel() {
 	      axios.get('channels/'+this.$route.params.id).then(response => {
 	        this.channelCourant = response.data;
 	        this.chargerMessages();
@@ -83,9 +76,11 @@ export default {
       });
   	},
 	chargerMessages() {
-		axios.get('channels/'+this.channelCourant.id+'/posts').then(response => {
-			this.messages = response.data
-		});
+		if(this.channelCourant) {
+			axios.get('channels/'+this.channelCourant.id+'/posts').then(response => {
+				this.messages = response.data;
+			});
+		}
 	}
   }
 }
@@ -114,20 +109,18 @@ export default {
 	text-overflow: ellipsis;
 }
 .home {
-	position: relative;
-	height: calc(100% - 3.25rem);
+/*	position: relative;
+	height: calc(100% - 3.25rem);*/
+	display: flex;
+	height: calc(100% - 3.25rem)
 }
 .col-conversations {
-	position: absolute;
-	width: 300px;
-	left: 0;
-	top:0;
-	height: 100%;
+	position: relative;
+	width:300px;
 }
 .col-conversation {
-	margin-left: 300px;
 	position: relative;
-	height: 100%;
+	flex:1;
 }
 
 </style>

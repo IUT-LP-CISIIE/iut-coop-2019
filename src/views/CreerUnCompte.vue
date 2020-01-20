@@ -10,7 +10,7 @@
           <champ type="text" title="Nom" icon="user" placeholder="Nom et prénom du membre" name="fullname" :value="fullname"/>
 					<champ type="email" title="Adresse mail" icon="envelope" placeholder="Adresse mail du membre" name="email" :value="email"/>
           <champ type="password" title="Mot de passe" icon="lock" placeholder="Mot de passe du membre" name="password" :value="password"/>
-					<champ v-show="password" type="password" title="Vérification du mot de passe" icon="check" placeholder="Entrez à nouveau le mot de passe" :value="passwordVerif"/>
+					<champ v-show="password" type="password" title="Vérification du mot de passe" icon="check" placeholder="Entrez à nouveau le mot de passe" name="passwordVerif" :value="passwordVerif"/>
 
 					<div class="field is-grouped">
 					  <div class="control">
@@ -36,10 +36,10 @@
     },
     data() {
     	return {
-        fullname : 'test',
-    		password : 'test',
-        passwordVerif : 'test',
-    		email : 'test@test.fr',
+        fullname : 'gilles',
+    		password : 'gilles',
+        passwordVerif : 'gilles',
+    		email : 'gilles@mail.com',
     	}
     },
     mounted() {
@@ -49,6 +49,7 @@
     },
     methods : {
       setMember() {
+        console.log(this.password,this.passwordVerif)
         if(this.password != this.passwordVerif) {
           this.$bus.$emit('erreur','Les deux mot de passe sont différents');
         } else {
