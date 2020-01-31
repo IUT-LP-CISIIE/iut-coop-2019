@@ -17,7 +17,8 @@
 							<span class="panel-icon">
 								<i class="fas fa-comment" aria-hidden="true"></i>
 							</span>
-    						{{ channel.topic }} 
+    						{{ channel.topic }}
+    						<small class="tag" v-show="channel.nbMessages">{{ channel.nbMessages }}</small>
 					</router-link>
 				</template>
 
@@ -25,8 +26,22 @@
 			</nav>
 
 		</div>
+
+
 		<div class="col-conversation">
-			<Messages :messages="messages" :channel="channelCourant"></Messages>
+			<Messages v-if="channelCourant" :messages="messages" :channel="channelCourant"></Messages>
+			<section v-else class="hero is-large">
+			  <div class="hero-body">
+			    <div class="container">
+			      <h1 class="title">
+			        Bienvenue sur Co'op
+			      </h1>
+			      <h2 class="subtitle">
+			        Cliquez sur une conversation dans la liste à gauche pour commencer.
+			      </h2>
+			    </div>
+			  </div>
+			</section>			
 		</div>
 
   </div>
@@ -73,12 +88,27 @@ export default {
   	chargerChannels() {
       axios.get('channels').then(response => {
         this.channels = response.data;
+        this.calculnbMessages();
       });
+  	},
+  	calculnbMessages() {
+        if(this.channelCourant) {
+	        for(let i=0;i<this.channels.length;i++) {
+	        	let channel = this.channels[i];
+	        	if(channel.id == this.channelCourant.id) {
+	        		channel.nbMessages = this.messages.length+' message(s)';
+	        	} else {
+					channel.nbMessages = '';	        		
+	        	}
+	        	this.channels[i] = channel;
+	        }
+		}  		
   	},
 	chargerMessages() {
 		if(this.channelCourant) {
 			axios.get('channels/'+this.channelCourant.id+'/posts').then(response => {
 				this.messages = response.data;
+				this.calculnbMessages();				
 			});
 		}
 	}

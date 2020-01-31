@@ -95,5 +95,6 @@ header {
 	background: white;
 	width: 100%;
 	padding: 1em;
+	z-index: 10;
 }
 </style>

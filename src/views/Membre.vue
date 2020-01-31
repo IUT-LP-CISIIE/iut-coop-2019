@@ -1,6 +1,15 @@
 <template>
 
 	<section class="section">
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><router-link to="/">Accueil</router-link></li>
+    <li><router-link to="/membres">Membres</router-link></li>
+    <li class="is-active"><router-link :to="{name:'membre',params:{id:membre.id}}">{{membre.fullname}}</router-link></li>
+  </ul>
+</nav>
+
 		<h1 class="title">{{membre.fullname}}</h1>
 		<h2 class="subtitle">{{membre.email}}</h2>
 
