@@ -11,6 +11,11 @@ const routes = [
     component: Home
   },
   {
+    path: '/conversation/:id/:message',
+    name: 'conversation-message',
+    component: Home
+  },
+  {
     path: '/conversation/:id',
     name: 'conversation',
     component: Home

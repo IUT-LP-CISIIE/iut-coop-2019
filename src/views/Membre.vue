@@ -14,7 +14,7 @@
 		<h2 class="subtitle">{{membre.email}}</h2>
 
 			<template v-if="messages.length>0">			
-				<Message v-for="message in messages" :message="message"></Message>
+				<Message v-for="message in messages" :message="message" :channel="message.channel"></Message>
 			</template>
 			<section class="section" v-else><i>Ce membre n'a posté aucun message</i></section>
 	</section>
@@ -41,6 +41,7 @@
 					let messages = response.data;
 					messages.forEach(message => {
 						if(message.member_id == this.membre.id) {
+							message.channel = channel;
 							this.messages.push(message);
 						}
 					})

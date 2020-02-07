@@ -1,48 +1,101 @@
 <template>
 	<div class="messages" v-if="channel">
 
-			<header>
-				<h2 class="title">{{channel.topic}}</h2>
-				<p class="subtitle" v-html="afficherTags(channel.label)"></p>
-			</header>
+		<header>
+			<h2 class="title"> 
+			<span ref="editer" 
+			:contenteditable="editerConversation" 
+			@keydown.esc="annulerEditerConversation()" 
+			@keydown.enter.prevent="updateChannel()" 
+			@input="topic = $event.target.innerText"
+			>{{channel.topic}}</span></h2>
+			
+			<p class="subtitle">
+				<span class="tag"><span 
+				:contenteditable="editerConversation" 
+				@keydown.esc="annulerEditerConversation()" 
+				@keydown.enter.prevent="updateChannel()" 
+				@input="label = $event.target.innerText"
+				>{{channel.label}}</span></span>
+			</p>
 
-			<template v-if="messages.length>0">			
-				<Message v-for="message in messages" :message="message"></Message>
-			</template>
-			<section class="section" v-else><i>Il n'y a aucun message dans cette discussion</i></section>
+			<div class="buttons actions">
+				<template v-if="editerConversation">
+					<button class="button is-text" @click="annulerEditerConversation()">
+						<span class="icon is-small">
+							<i class="fa fa-times"></i>
+						</span>
+					</button>					
+					<button class="button is-success" @click="updateChannel()">
+						<span class="icon is-small">
+							<i class="fa fa-save"></i>
+						</span>
+					</button>					
+				</template>
+				<template v-else>
+					<button class="button" @click="activerEditerConversation()">
+						<span class="icon is-small">
+							<i class="fa fa-pen"></i>
+						</span>
+					</button>					
+				</template>
+			</div>
+		</header>
+
+		<template v-if="messages.length>0">			
+			<Message v-for="message in messages" :message="message"></Message>
+		</template>
+		<section class="section" v-else><i>Il n'y a aucun message dans cette discussion</i></section>
 
 
-			<div class="poster">
+		<div class="poster">
 
-		    	<form @submit.prevent="posterMessage">
+			<form @submit.prevent="posterMessage">
 				<div class="field">
 					<p class="control has-icons-left">
-					<input class="input" type="text" placeholder="Entrez votre message ici" v-model="nouveauMessage">
-					<span class="icon is-small is-left">
-					<i class="fas fa-comment"></i>
-					</span>
+						<input class="input" type="text" placeholder="Entrez votre message ici" v-model="nouveauMessage">
+						<span class="icon is-small is-left">
+							<i class="fas fa-comment"></i>
+						</span>
 					</p>
 				</div>		    		
-				</form>
-			</div>
+			</form>
+		</div>
 
 	</div>
 </template>
 
 <script>
-  import Message from '@/components/Message.vue'
+	import Message from '@/components/Message.vue'
 	export default {
 		name : 'Messages',
 		props : ['channel','messages'],
 		components : {Message},
 		data() {
 			return {
-				nouveauMessage:''
+				label:'',
+				topic:'',
+				nouveauMessage:'',
+				editerConversation:false
 			}
 		},
 		mounted() {
 		},
 		methods : {
+			annulerEditerConversation() {
+				this.editerConversation=false;
+				this.channel.label = this.label;
+				this.channel.topic = this.topic;
+			},
+			activerEditerConversation() {
+				this.label = this.channel.label;
+				this.topic = this.channel.topic;
+				this.editerConversation=true;
+				setTimeout(()=>{
+					this.$refs.editer.focus();
+					this.selectText(this.$refs.editer)
+				},100);
+			},
 			getMembre(id) {
 				for(let i=0;i<membres.length;i++){
 					if(membres[i].id == id) {
@@ -53,23 +106,26 @@
 			posterMessage() {
 				if(this.nouveauMessage) {
 					axios.post('channels/'+this.channel.id+'/posts',{
-							member_id:this.$store.state.membre.id,
-							message:this.nouveauMessage
-						}).then(response => {
-							this.nouveauMessage='';
-							this.$bus.$emit('rechargerChannel');
-						})
+						member_id:this.$store.state.membre.id,
+						message:this.nouveauMessage
+					}).then(response => {
+						this.nouveauMessage='';
+						this.$bus.$emit('rechargerChannel');
+					})
 				}
 			},
-		  	afficherTags(tags) {
-		  		if(tags) {
-			  		let html = [];
-			  		tags.split(',').forEach(tag => {
-			  			html.push('<span class="tag">'+tag+'</span>');
-			  		});
-			  		return html.join(' ');
-			  	}
-		  	}			
+			updateChannel() {
+				let payload = {
+					topic:this.topic,
+					label:this.label,
+				};
+				axios.put('channels/'+this.channel.id,payload).then(response => {
+					this.editerConversation=false;				
+					this.$bus.$emit('rechargerChannel');			
+				})
+
+				return false;
+			}			
 		}
 	}
 </script>
@@ -83,7 +139,7 @@
 	width: 100%;
 }
 .messages {
-	padding: 100px 1em;
+	padding: 150px 1em;
 	height: 100%;
 	overflow: auto;
 }
@@ -96,5 +152,19 @@ header {
 	width: 100%;
 	padding: 1em;
 	z-index: 10;
+	padding-right: 200px;
+}
+.actions {
+	position: absolute;
+	top: 1em;
+	right: 1em;
+}
+.actions .button {
+	border-color: transparent;
+}
+[contenteditable="true"] {
+	background:#eee;
+	margin:-5px;
+	padding: 5px;
 }
 </style>

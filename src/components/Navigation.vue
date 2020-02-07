@@ -5,14 +5,14 @@
           Coop
         </a>
 
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <a role="button" class="navbar-burger burger"  @click="actif=!actif" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div class="navbar-menu">
+      <div class="navbar-menu" :class="actif ? 'is-active' : ''">
         <div class="navbar-start">
           <router-link class="navbar-item" to="/">Conversation</router-link>
           
@@ -25,5 +25,10 @@
 <script>
 export default {
   name: 'navigation',
+  data() {
+    return {
+      actif:false
+    }
+  }
 }
 </script>
